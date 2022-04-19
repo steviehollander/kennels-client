@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react"
 import { useHistory } from 'react-router-dom'
-import { addEmployee } from "./EmployeeManager"
+import { addEmployee, getEmployeeById, getEmployees } from "./EmployeeManager"
 import { getLocations } from "../location/LocationManager"
 import { getAnimals } from "../animal/AnimalManager"
 import "./Employees.css"
@@ -9,6 +9,7 @@ export const EmployeeForm = () => {
     const name = useRef(null)
     const location = useRef(null)
     const animal = useRef(null)
+    const address = useRef(null)
 
     const history = useHistory()
 
@@ -19,8 +20,8 @@ export const EmployeeForm = () => {
         Get animal state and location state on initialization.
     */
     useEffect(() => {
-       getAnimals().then(animalsData => setAnimals(animalsData))
-       getLocations().then(locationsData => setLocations(locationsData))
+        getAnimals().then(animalsData => setAnimals(animalsData))
+        getLocations().then(locationsData => setLocations(locationsData))
     }, [])
 
     const constructNewEmployee = () => {
@@ -33,15 +34,18 @@ export const EmployeeForm = () => {
         const locationId = parseInt(location.current.value)
         const animalId = parseInt(animal.current.value)
 
+
         if (locationId === 0) {
             window.alert("Please select a location")
         } else {
             addEmployee({
                 name: name.current.value,
                 locationId,
-                animalId
+                animalId,
+                address: address.current.value
+
             })
-            .then(() => history.push("/employees"))
+                .then(() => history.push("/employees"))
         }
     }
 
@@ -52,6 +56,12 @@ export const EmployeeForm = () => {
                 <div className="form-group">
                     <label htmlFor="employeeName">Employee name: </label>
                     <input type="text" id="employeeName" ref={name} required autoFocus className="form-control" placeholder="Employee name" />
+                </div>
+            </fieldset>
+            <fieldset>
+                <div className="form-group">
+                    <label htmlFor="employeeAddress">Employee address: </label>
+                    <input type="text" id="employeeAddress" ref={address} required autoFocus className="form-control" placeholder="Employee address" />
                 </div>
             </fieldset>
             <fieldset>
